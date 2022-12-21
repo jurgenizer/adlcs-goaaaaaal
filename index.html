@@ -12,37 +12,75 @@
     document.body.appendChild(app.view);
 
 
-    // Create a Graphics object, set a fill color, draw a rectangle
-    let background = new PIXI.Graphics();
-    background.beginFill(0xff0000);
-    background.drawRect(0, 0, 200, 100);
-
-    // Add it to the stage to render
-    app.stage.addChild(background);
-
-
+    // Create the field background container
     const container = new PIXI.Container();
+    // Add it to the stage
     app.stage.addChild(container);
-
-    const fieldImage= PIXI.Texture.from('images/field.png');
-
+    // Load the texture map
+    const fieldImage = PIXI.Texture.from('images/field.png');
     const fieldSprite = new PIXI.Sprite(fieldImage);
-
     container.addChild(fieldSprite);
 
+    // Create a green player sprite from image path and add it to the stage
+    let playerGreen = PIXI.Sprite.from('images/player-green.png');
+    app.stage.addChild(playerGreen);
 
+    // center the blue player sprite's anchor point
+    playerGreen.anchor.x = 0.5;
+    playerGreen.anchor.y = 0.5;
 
-
-    // Create a sprite and add it to the stage
-    let sprite = PIXI.Sprite.from('images/ball.png');
-    app.stage.addChild(sprite);
-
-    // Add a ticker callback to move the sprite back and forth
+    // Add a ticker callback to move the green player sprite back and forth
     let elapsed = 0.0;
     app.ticker.add((delta) => {
       elapsed += delta;
-      sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+      playerGreen.x = 150.0 + Math.cos(elapsed / 50.0) * 100.0;
+      playerGreen.y = 100.0;
     });
+
+
+    // Create a blue player sprite from image path and add it to the stage
+    let playerBlue = PIXI.Sprite.from('images/player-blue.png');
+    app.stage.addChild(playerBlue);
+
+    // Center the blue player sprite's anchor point
+    playerBlue.anchor.x = 0.5;
+    playerBlue.anchor.y = 0.5;
+
+
+    // Move the blue player sprite to where she/he will shoot from
+    playerBlue.position.x = 150;
+    playerBlue.position.y = 450;
+
+    // Create a ball sprite from image path and add it to the stage
+    let ball = PIXI.Sprite.from('images/ball.png');
+
+    // center the ball sprite's anchor point
+    ball.anchor.x = 0.5;
+    ball.anchor.y = 0.5;
+
+    // Make the green player sprite respnd to mousedown input
+    stage.interactive = true;
+
+    stage.on("mousedown", function (e) {
+      shoot(playerBlue.rotation, {
+        x: playerBlue.position.x + Math.cos(playerBlue.rotation) * 20,
+        y: playerBlue.position.y + Math.sin(playerBlue.rotation) * 20
+      });
+    })
+
+    var balls = [];
+    var ballSpeed = 5;
+
+    function shoot(rotation, startPosition) {
+      ball.position.x = startPosition.x;
+      ball.position.y = startPosition.y;
+      ball.rotation = rotation;
+      stage.addChild(ball);
+      balls.push(ball);
+    }
+
+
+
 
   </script>
 </body>
