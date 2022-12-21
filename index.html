@@ -1,24 +1,50 @@
 <!doctype html>
 <html>
-  <head>
-    <script src="https://pixijs.download/release/pixi.js"></script>
 
-  </head>
-  <body>
-    <script>
-        let app = new PIXI.Application({ width: 300, height: 600 });
-        document.body.appendChild(app.view);
+<head>
+  <script src="https://pixijs.download/release/pixi.js"></script>
 
-        // Create a sprite and add it to the stage
-      let sprite = PIXI.Sprite.from('ball.png');
-      app.stage.addChild(sprite);
+</head>
 
-      // Add a ticker callback to move the sprite back and forth
-      let elapsed = 0.0;
-      app.ticker.add((delta) => {
-        elapsed += delta;
-        sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
-      });
-    </script>
-  </body>
+<body style="background-color:#009820;">
+  <script>
+    let app = new PIXI.Application({ width: 300, height: 600, background: '#009820' });
+    document.body.appendChild(app.view);
+
+
+    // Create a Graphics object, set a fill color, draw a rectangle
+    let background = new PIXI.Graphics();
+    background.beginFill(0xff0000);
+    background.drawRect(0, 0, 200, 100);
+
+    // Add it to the stage to render
+    app.stage.addChild(background);
+
+
+    const container = new PIXI.Container();
+    app.stage.addChild(container);
+
+    const fieldImage= PIXI.Texture.from('images/field.png');
+
+    const fieldSprite = new PIXI.Sprite(fieldImage);
+
+    container.addChild(fieldSprite);
+
+
+
+
+    // Create a sprite and add it to the stage
+    let sprite = PIXI.Sprite.from('images/ball.png');
+    app.stage.addChild(sprite);
+
+    // Add a ticker callback to move the sprite back and forth
+    let elapsed = 0.0;
+    app.ticker.add((delta) => {
+      elapsed += delta;
+      sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+    });
+
+  </script>
+</body>
+
 </html>
