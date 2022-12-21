@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+
+  </head>
+  <body>
+    <script>
+        let app = new PIXI.Application({ width: 300, height: 600 });
+        document.body.appendChild(app.view);
+
+        // Create a sprite and add it to the stage
+      let sprite = PIXI.Sprite.from('ball.png');
+      app.stage.addChild(sprite);
+
+      // Add a ticker callback to move the sprite back and forth
+      let elapsed = 0.0;
+      app.ticker.add((delta) => {
+        elapsed += delta;
+        sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+      });
+    </script>
+  </body>
+</html>
