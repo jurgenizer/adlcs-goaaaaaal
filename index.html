@@ -4,9 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A simple JavaScript game made with PixiJS">
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #009820;
+    padding: 10px;
+    text-align: center;
+    font-size: 35px;
+    color: white;
+  }
+</style>
+
 <script src="pixi.min.js"></script>
 </head>
-<body style="background-color:#009820;">
+
+<body>
   <script>
     let app = new PIXI.Application({ width: 300, height: 600, background: '#009820' });
     document.body.appendChild(app.view);
@@ -23,7 +36,6 @@
     const fieldSprite = new PIXI.Sprite(fieldImage);
     gameScene.addChild(fieldSprite);
 
-
     // Create a goal sprite from image path and add it to the stage
     let goal = PIXI.Sprite.from('images/goal.png');
     app.stage.addChild(goal);
@@ -37,21 +49,43 @@
     goal.position.y = 42;
 
     // Create a green player sprite from image path and add it to the stage
-    let playerGreen = PIXI.Sprite.from('images/player-green.png');
-    app.stage.addChild(playerGreen);
+    let playerGreenOne = PIXI.Sprite.from('images/player-green.png');
+    app.stage.addChild(playerGreenOne);
 
-    // center the blue player sprite's anchor point
-    playerGreen.anchor.x = 0.5;
-    playerGreen.anchor.y = 0.5;
+    // center the green player sprite's anchor point
+    playerGreenOne.anchor.x = 0.5;
+    playerGreenOne.anchor.y = 0.5;
+
+    // Create a another green player sprite from image path and add it to the stage
+    let playerGreenTwo = PIXI.Sprite.from('images/player-green.png');
+    app.stage.addChild(playerGreenTwo);
+
+    // center the green player sprite's anchor point
+    playerGreenTwo.anchor.x = 0.5;
+    playerGreenTwo.anchor.y = 0.5;
+
+    // Create yet another green player sprite from image path and add it to the stage
+    let playerGreenThree = PIXI.Sprite.from('images/player-green.png');
+    app.stage.addChild(playerGreenThree);
+
+    // center the green player sprite's anchor point
+    playerGreenThree.anchor.x = 0.5;
+    playerGreenThree.anchor.y = 0.5;
 
     // Add a ticker callback to move the green player sprite back and forth
     let elapsed = 0.0;
     app.ticker.add((delta) => {
       elapsed += delta;
-      playerGreen.x = 150.0 + Math.cos(elapsed / 50.0) * 100.0;
-      playerGreen.y = 100.0;
-    });
+      playerGreenOne.x = 150.0 + Math.cos(elapsed / 50.0) * 100.0;
+      playerGreenOne.y = 90.0;
 
+
+      playerGreenTwo.x = 150.0 + Math.cos(elapsed / 50.0) * -100.0;
+      playerGreenTwo.y = 130.0;
+
+      playerGreenThree.x = 150.0 + Math.sin(elapsed / 50.0) * 100.0;
+      playerGreenThree.y = 170.0;
+    });
 
     // Create a blue player sprite from image path and add it to the stage
     let playerBlue = PIXI.Sprite.from('images/player-blue.png');
@@ -77,12 +111,10 @@
     ////// Ball kicking code
     app.stage.on('pointerdown', kickBall);
 
-
     let balls = [];
     let ballSpeed = 10;
     let ballReboundSpeed = -5;
     let ballRandomOffset = 0;
-
 
     function kickBall(e) {
       console.log("Kick!");
@@ -123,7 +155,9 @@
       updateBalls(delta);
 
       for (let i = 0; i < balls.length; i++) {
-        if (rectsIntersect(balls[i], playerGreen)) {
+        if (rectsIntersect(balls[i], playerGreenOne)
+          || rectsIntersect(balls[i], playerGreenTwo)
+          || rectsIntersect(balls[i], playerGreenThree)) {
           console.log("Save");
           balls[i].speed = ballReboundSpeed;
           ballRandomOffset = Math.random() < 0.5 ? -11 : 11;
@@ -138,7 +172,6 @@
 
     }
 
-
     ////// Collision detection code (is it a goal?)
     function rectsIntersect(a, b) {
       let aBox = a.getBounds();
@@ -148,7 +181,6 @@
         aBox.y + aBox.height > bBox.y &&
         aBox.y < bBox.y + bBox.height;
     }
-
 
     ////// Draw the score
     playerBlue.score = 0;
@@ -162,7 +194,7 @@
       align: 'center',
     });
 
-    scoreText = new PIXI.Text('SCORE', textStyle);
+    scoreText = new PIXI.Text('click / tap on field', textStyle);
     scoreText.x = 150;
     scoreText.y = 510;
     // Center the text anchor point
@@ -176,4 +208,5 @@
     }
   </script>
 </body>
+
 </html>
