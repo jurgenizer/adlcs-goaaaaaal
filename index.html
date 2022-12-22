@@ -11,6 +11,8 @@
     let app = new PIXI.Application({ width: 300, height: 600, background: '#009820' });
     document.body.appendChild(app.view);
 
+    // Game Ticker
+    app.ticker.add(gameLoop);
 
     // Create the field background container
     const container = new PIXI.Container();
@@ -20,6 +22,19 @@
     const fieldImage = PIXI.Texture.from('images/field.png');
     const fieldSprite = new PIXI.Sprite(fieldImage);
     container.addChild(fieldSprite);
+
+    // Create a goal sprite from image path and add it to the stage
+    let goal = PIXI.Sprite.from('images/goal.png');
+    app.stage.addChild(goal);
+
+    // center the goal sprite's anchor point
+    goal.anchor.x = 0.5;
+    goal.anchor.y = 0.5;
+
+    // Move the goal to right position 
+    goal.position.x = 150;
+    goal.position.y = 20;
+
 
     // Create a green player sprite from image path and add it to the stage
     let playerGreen = PIXI.Sprite.from('images/player-green.png');
@@ -52,69 +67,57 @@
     playerBlue.position.x = 150;
     playerBlue.position.y = 450;
 
-
-
     // Enable interactivity!
     app.stage.interactive = true;
 
     // Make sure the whole canvas area is interactive.
     app.stage.hitArea = app.screen;
 
-    // Follow the pointer
-    app.stage.addEventListener('pointermove', (e) => {
-      // playerBlue.position.copyFrom(e.global);
-    });
-
-    app.view.addEventListener('pointermove', e => {
-      //console.log(e.clientX, e.clientY);
-
-    });
+    app.stage.on('pointerdown', kickBall);
 
 
-
-
-    console.log('HELLO!');
-
-let pointerPosition = null;
-
-app.stage.hitArea = app.screen;
-app.stage.on('pointermove', (event) => {
-    pointerPosition = pointerPosition || { x: 0, y: 0 };
-    pointerPosition.x = event.global.x;
-    pointerPosition.y = event.global.y;
-
-    console.log(pointerPosition.x, pointerPosition.y);
-});
-
-// Listen for animate update
-app.ticker.add(() => {
-    if (!pointerPosition) return;
-
-    playerBlue.rotation = rotateToPoint(pointerPosition.x, pointerPosition.y, playerBlue.position.x, playerBlue.position.y);
-
-    
-});
-
-
-
-
-
-function rotateToPoint(mx, my, px, py){  
-  let self = this;
-  let dist_Y = my - py;
-  let dist_X = mx - px;
-  let angle = Math.atan2(dist_Y,dist_X);
-  //let degrees = angle * 180/ Math.PI;
-  return angle;
-}
-
-
-
-
-
-    // Lets create an array of soccer balls!
     let balls = [];
-    let ballSpeed = 5;
+    let ballSpeed = 10;
+
+
+    function kickBall(e) {
+      console.log("Kick!");
+
+      let ball = createBall();
+      balls.push(ball);
+    }
+
+    function createBall() {
+      let ball = PIXI.Sprite.from('images/ball.png');
+      ball.anchor.set(0.5);
+      ball.x = playerBlue.x;
+      ball.y = playerBlue.y;
+      ball.speed = ballSpeed;
+      app.stage.addChild(ball);
+
+      return ball;
+    }
+
+    function updateBalls(delta) {
+      for (let i = 0; i < balls.length; i++) {
+        balls[i].position.y -= balls[i].speed;
+        if (balls[i].position.y < 0) {
+          balls[i].dead = true;
+        }
+      }
+
+      for (let i = 0; i < balls.length; i++) {
+        if (balls[i].dead) {
+          app.stage.removeChild(balls[i]);
+          // Important! remove balls from array
+          balls.splice(i, 1);
+        }
+      }
+    }
+
+    function gameLoop(delta) {
+      updateBalls(delta);
+    }
 
 
 
