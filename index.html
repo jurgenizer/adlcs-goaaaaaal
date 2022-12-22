@@ -1,33 +1,28 @@
 <!doctype html>
-<html>
 
-<head>
-  <script src="https://pixijs.download/release/pixi.js"></script>
-
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A simple JavaScript game made with PixiJS">
+<script src="pixi.min.js"></script>
 </head>
-
 <body style="background-color:#009820;">
   <script>
     let app = new PIXI.Application({ width: 300, height: 600, background: '#009820' });
     document.body.appendChild(app.view);
 
-
-    // Scoring variable
-    //let score = 0;
-    
     // Game Ticker
     app.ticker.add(gameLoop);
 
     // Create the field background container
-    const container = new PIXI.Container();
+    const gameScene = new PIXI.Container();
     // Add it to the stage
-    app.stage.addChild(container);
+    app.stage.addChild(gameScene);
     // Load the texture map
     const fieldImage = PIXI.Texture.from('images/field.png');
     const fieldSprite = new PIXI.Sprite(fieldImage);
-    container.addChild(fieldSprite);
+    gameScene.addChild(fieldSprite);
 
-  
 
     // Create a goal sprite from image path and add it to the stage
     let goal = PIXI.Sprite.from('images/goal.png');
@@ -35,11 +30,11 @@
 
     // center the goal sprite's anchor point
     goal.anchor.x = 0.5;
-    goal.anchor.y = 0.5;
+    goal.anchor.y = 1.0;
 
     // Move the goal to right position 
     goal.position.x = 150;
-    goal.position.y = 20;
+    goal.position.y = 42;
 
     // Create a green player sprite from image path and add it to the stage
     let playerGreen = PIXI.Sprite.from('images/player-green.png');
@@ -86,7 +81,7 @@
     let balls = [];
     let ballSpeed = 10;
     let ballReboundSpeed = -5;
-
+    let ballRandomOffset = 0;
 
 
     function kickBall(e) {
@@ -110,7 +105,7 @@
     function updateBalls(delta) {
       for (let i = 0; i < balls.length; i++) {
         balls[i].position.y -= balls[i].speed;
-        if (balls[i].position.y < 20 || balls[i].position.y > 540) {
+        if (balls[i].position.y < 42 || balls[i].position.y > 540) {
           balls[i].dead = true;
         }
       }
@@ -131,22 +126,20 @@
         if (rectsIntersect(balls[i], playerGreen)) {
           console.log("Save");
           balls[i].speed = ballReboundSpeed;
-
+          ballRandomOffset = Math.random() < 0.5 ? -11 : 11;
+          console.log(ballRandomOffset);
+          balls[i].x = balls[i].x + ballRandomOffset;
         }
         if (rectsIntersect(balls[i], goal)) {
           console.log("Goal");
-          
-         // scoreText.text = playerBlue.score;
-         updateScore(delta);
-         
+          updateScore(delta);
         }
       }
-     
+
     }
 
 
-    ////// Collision detection code (is it a goal)
-
+    ////// Collision detection code (is it a goal?)
     function rectsIntersect(a, b) {
       let aBox = a.getBounds();
       let bBox = b.getBounds();
@@ -154,15 +147,13 @@
         aBox.x < bBox.x + bBox.width &&
         aBox.y + aBox.height > bBox.y &&
         aBox.y < bBox.y + bBox.height;
-
     }
 
 
     ////// Draw the score
- playerBlue.score = 0;
+    playerBlue.score = 0;
 
-        // Add text to display score
-
+    // Add text to display score
     const textStyle = new PIXI.TextStyle({
       fontFamily: 'Arial',
       fontSize: 26,
@@ -171,7 +162,7 @@
       align: 'center',
     });
 
-    scoreText =  new PIXI.Text('SCORE', textStyle);
+    scoreText = new PIXI.Text('SCORE', textStyle);
     scoreText.x = 150;
     scoreText.y = 510;
     // Center the text anchor point
@@ -179,12 +170,10 @@
     scoreText.anchor.y = 0.5;
     app.stage.addChild(scoreText);
 
-function updateScore(delta){
-  playerBlue.score++;
-  scoreText.text = playerBlue.score;
-  }
-
+    function updateScore(delta) {
+      playerBlue.score++;
+      scoreText.text = playerBlue.score;
+    }
   </script>
 </body>
-
 </html>
