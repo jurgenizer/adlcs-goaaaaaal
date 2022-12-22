@@ -11,6 +11,10 @@
     let app = new PIXI.Application({ width: 300, height: 600, background: '#009820' });
     document.body.appendChild(app.view);
 
+
+    // Scoring variable
+    //let score = 0;
+    
     // Game Ticker
     app.ticker.add(gameLoop);
 
@@ -23,6 +27,8 @@
     const fieldSprite = new PIXI.Sprite(fieldImage);
     container.addChild(fieldSprite);
 
+  
+
     // Create a goal sprite from image path and add it to the stage
     let goal = PIXI.Sprite.from('images/goal.png');
     app.stage.addChild(goal);
@@ -34,7 +40,6 @@
     // Move the goal to right position 
     goal.position.x = 150;
     goal.position.y = 20;
-
 
     // Create a green player sprite from image path and add it to the stage
     let playerGreen = PIXI.Sprite.from('images/player-green.png');
@@ -73,11 +78,15 @@
     // Make sure the whole canvas area is interactive.
     app.stage.hitArea = app.screen;
 
+
+    ////// Ball kicking code
     app.stage.on('pointerdown', kickBall);
 
 
     let balls = [];
     let ballSpeed = 10;
+    let ballReboundSpeed = -5;
+
 
 
     function kickBall(e) {
@@ -101,7 +110,7 @@
     function updateBalls(delta) {
       for (let i = 0; i < balls.length; i++) {
         balls[i].position.y -= balls[i].speed;
-        if (balls[i].position.y < 0) {
+        if (balls[i].position.y < 20 || balls[i].position.y > 540) {
           balls[i].dead = true;
         }
       }
@@ -117,15 +126,63 @@
 
     function gameLoop(delta) {
       updateBalls(delta);
+
+      for (let i = 0; i < balls.length; i++) {
+        if (rectsIntersect(balls[i], playerGreen)) {
+          console.log("Save");
+          balls[i].speed = ballReboundSpeed;
+
+        }
+        if (rectsIntersect(balls[i], goal)) {
+          console.log("Goal");
+          
+         // scoreText.text = playerBlue.score;
+         updateScore(delta);
+         
+        }
+      }
+     
     }
 
 
+    ////// Collision detection code (is it a goal)
+
+    function rectsIntersect(a, b) {
+      let aBox = a.getBounds();
+      let bBox = b.getBounds();
+      return aBox.x + aBox.width > bBox.x &&
+        aBox.x < bBox.x + bBox.width &&
+        aBox.y + aBox.height > bBox.y &&
+        aBox.y < bBox.y + bBox.height;
+
+    }
 
 
+    ////// Draw the score
+ playerBlue.score = 0;
 
+        // Add text to display score
 
+    const textStyle = new PIXI.TextStyle({
+      fontFamily: 'Arial',
+      fontSize: 26,
+      fontWeight: 'bold',
+      fill: '#ffffff',
+      align: 'center',
+    });
 
+    scoreText =  new PIXI.Text('SCORE', textStyle);
+    scoreText.x = 150;
+    scoreText.y = 510;
+    // Center the text anchor point
+    scoreText.anchor.x = 0.5;
+    scoreText.anchor.y = 0.5;
+    app.stage.addChild(scoreText);
 
+function updateScore(delta){
+  playerBlue.score++;
+  scoreText.text = playerBlue.score;
+  }
 
   </script>
 </body>
