@@ -112,8 +112,11 @@
       pointerPosition = pointerPosition || { x: 0, y: 0 };
       pointerPosition.x = event.global.x;
       pointerPosition.y = event.global.y;
+      // console.log(pointerPosition.x, pointerPosition.y);
+      if (pointerPosition.x > 40 && pointerPosition.x < 260) {
+        playerBlue.position.x = pointerPosition.x;
+      }
 
-      console.log(pointerPosition.x, pointerPosition.y);
     });
 
 
