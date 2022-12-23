@@ -14,7 +14,6 @@ body {
     color: white;
   }
 </style>
-
 <script src="pixi.min.js"></script>
 </head>
 
@@ -75,14 +74,14 @@ body {
     let elapsed = 0.0;
     app.ticker.add((delta) => {
       elapsed += delta;
-      playerGreenOne.x = 150.0 + Math.cos(elapsed / 50.0) * 100.0;
+      playerGreenOne.x = 150.0 + Math.cos(elapsed / 32.0) * 70.0;
       playerGreenOne.y = 90.0;
 
 
-      playerGreenTwo.x = 150.0 + Math.cos(elapsed / 50.0) * -100.0;
+      playerGreenTwo.x = 150.0 + Math.cos(elapsed / 32.0) * -70.0;
       playerGreenTwo.y = 130.0;
 
-      playerGreenThree.x = 150.0 + Math.sin(elapsed / 50.0) * 100.0;
+      playerGreenThree.x = 150.0 + Math.sin(elapsed / 32.0) * 70.0;
       playerGreenThree.y = 170.0;
     });
 
