@@ -74,14 +74,14 @@ body {
     let elapsed = 0.0;
     app.ticker.add((delta) => {
       elapsed += delta;
-      playerGreenOne.x = 150.0 + Math.cos(elapsed / 32.0) * 70.0;
+      playerGreenOne.x = 150.0 + Math.cos(elapsed / 30.0) * 70.0;
       playerGreenOne.y = 90.0;
 
 
-      playerGreenTwo.x = 150.0 + Math.cos(elapsed / 32.0) * -70.0;
+      playerGreenTwo.x = 150.0 + Math.cos(elapsed / 30.0) * -70.0;
       playerGreenTwo.y = 130.0;
 
-      playerGreenThree.x = 150.0 + Math.sin(elapsed / 32.0) * 70.0;
+      playerGreenThree.x = 150.0 + Math.sin(elapsed / 30.0) * 70.0;
       playerGreenThree.y = 170.0;
     });
 
@@ -145,6 +145,7 @@ body {
           app.stage.removeChild(balls[i]);
           // Important! remove balls from array
           balls.splice(i, 1);
+         restoreScore();
         }
       }
     }
@@ -157,6 +158,7 @@ body {
           || rectsIntersect(balls[i], playerGreenTwo)
           || rectsIntersect(balls[i], playerGreenThree)) {
           console.log("Save");
+          updateScoreSave('DEFENDED :(');
           balls[i].speed = ballReboundSpeed;
           ballRandomOffset = Math.random() < 0.5 ? -11 : 11;
           console.log(ballRandomOffset);
@@ -164,7 +166,7 @@ body {
         }
         if (rectsIntersect(balls[i], goal)) {
           console.log("Goal");
-          updateScore(delta);
+          updateScoreGoal(delta);
         }
       }
 
@@ -192,7 +194,7 @@ body {
       align: 'center',
     });
 
-    scoreText = new PIXI.Text('click / tap on field', textStyle);
+    scoreText = new PIXI.Text('Click / tap on field', textStyle);
     scoreText.x = 150;
     scoreText.y = 510;
     // Center the text anchor point
@@ -200,10 +202,20 @@ body {
     scoreText.anchor.y = 0.5;
     app.stage.addChild(scoreText);
 
-    function updateScore(delta) {
+    function updateScoreGoal(delta) {
       playerBlue.score++;
       scoreText.text = playerBlue.score;
     }
+
+    function updateScoreSave(word) {
+      scoreText.text = word;
+    }
+
+    function restoreScore() {
+      scoreText.text = playerBlue.score;
+    }
+
+
   </script>
 </body>
 
